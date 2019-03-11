@@ -20,10 +20,11 @@
 (server-start)
 
 ;; elpa
+(require 'package)
 (add-to-list 'package-archives
-                          '("melpa" . "http://melpa.org/packages/") t)
+                           '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives
-             '("org" . "http://orgmode.org/elpa/") t)
+              '("org" . "http://orgmode.org/elpa/") t)
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
 (setq package-list
