@@ -28,7 +28,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
 (setq package-list
-    '(f use-package markdown-mode nix-mode magit))
+    '(f use-package markdown-mode nix-mode magit haskell-mode))
 
 ; activate all the packages
 (package-initialize)
