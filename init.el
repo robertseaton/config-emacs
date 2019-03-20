@@ -250,7 +250,7 @@
   (add-to-list 'org-modules 'org-checklist))
 (eval-after-load "org" '(my-after-load-org))
 (setq org-capture-templates
-      '(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks") "* TODO %?\n")
+      '(("t" "Todo" entry (file+headline "~/org/inbox.org" "Unprocessed") "* TODO %?\n")
 	("l" "Links" plain (file+headline "~/org/pub/links.org" "Links") "- [[%:link][%?]]\n")
 	("w" "Web quote" plain (file+headline "~/org/pub/links.org" "Links") "- [[%:link][\"%i\"]] %?\n")
 	("n" "Nut" entry (file+headline "~/org/nuts.org" "Web") "* [[%:link][\"%i\"]] %? %^g\n")
@@ -335,7 +335,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/org/todo.org")))
+ '(org-agenda-files (quote ("~/org/org.org")))
  '(package-selected-packages
    (quote
     (noflet use-package sicp smooth-scrolling weechat fish-mode magit dumb-jump beeminder haskell-mode yasnippet yari wc-mode sml-mode smartparens slime sass-mode rvm ruby-tools rubocop rainbow-mode quack project-mode php-mode paredit org2blog nrepl markdown-mode magithub langtool inf-ruby helm ghc geiser flymake-easy dired+ color-theme)))
