@@ -54,9 +54,11 @@
    version-control t)       ; use versioned backups
 
 (setq backup-directory-alist
-`((".*" . "~/scratch/")))
+`(("." . "~/scratch/")))
+
+
 (setq auto-save-file-name-transforms
-          `((".*" "~/scratch" t)))
+      `((".*" "~/scratch/" t)))
 
 (setq-default fill-column 80)
 (add-hook 'text-mode-hook 'auto-fill-mode)
@@ -64,7 +66,36 @@
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "firefox")
 
+;; wordpress
 
+(setq org2blog/wp-blog-alist
+      '(("rs.io"
+         :url "http://rs.io/xmlrpc.php"
+         :username "admin"
+         :default-title "Untitled"
+         :default-categories ("org2blog" "emacs")
+         :tags-as-categories nil)
+      ("eatsquirrel"
+         :url "https://eatsquirrel.com/xmlrpc.php"
+         :username "admin"
+         :default-title "Untitled"
+         :default-categories ("Uncategorized")
+         :tags-as-categories nil)))
+
+(require 'auth-source)
+(defun add-blog (netrc-name xml-address)
+       (let* ((credentials (auth-source-user-and-password netrc-name))
+       (username (nth 0 credentials))
+       (password (nth 1 credentials))
+       (config `(,netrc-name
+                 :url ,xml-address
+                 :username ,username
+                 :password ,password)))
+	 (setq org2blog/wp-blog-alist (append org2blog/wp-blog-alist (list config)))))
+
+(setq org2blog/wp-blog-alist '())
+(add-blog "eatsquirrel" "https://eatsquirrel.com/xmlrpc.php")
+(add-blog "rs.io" "http://rs.io/xmlrpc.php")
 
 ;; email
 (require 'f)
@@ -142,6 +173,14 @@
 		 (smtpmail-default-smtp-server . "mercury.rs.io")
 		 (smtpmail-smtp-server . "mercury.rs.io")
 		 (smtpmail-smtp-service . 587)))))
+
+
+(setq org-babel-default-header-args
+      (cons '(:cache . "yes")
+	    (cons '(:exports . "both")
+		  (assq-delete-all :cache (assq-delete-all :exports org-babel-default-header-args)))))
+
+(setq org-confirm-babel-evaluate nil)
 
 ;; org-mode
 (require 'org-protocol)
@@ -253,6 +292,7 @@
       '(("t" "Todo" entry (file+headline "~/org/inbox.org" "Unprocessed") "* TODO %?\n")
 	("l" "Links" plain (file+headline "~/org/pub/links.org" "Links") "- [[%:link][%?]]\n")
 	("w" "Web quote" plain (file+headline "~/org/pub/links.org" "Links") "- [[%:link][\"%i\"]] %?\n")
+	("k" "Keyword" plain (file+headline "~/org/keywords.org" "Keywords") "- %?\n")
 	("n" "Nut" entry (file+headline "~/org/nuts.org" "Web") "* [[%:link][\"%i\"]] %? %^g\n")
 	("p" "PDF clipping" entry (file+headline "~/org/nuts.org" "PDFs") "* %(replace-regexp-in-string \"\n$\" \"\" (shell-command-to-string \"xdotool getwindowfocus getwindowname\")) %^g\n#+BEGIN_QUOTE\n%(shell-command-to-string \"xclip -o\")\n#+END_QUOTE\n")
 	("m" "Meditation log" entry (file+headline "~/org/99theses.org" "Personal: Meditation Log") "* %T\n%?\n** Intentions\n\n** Reflection & Noticings\n\n" :clock-in t)
@@ -319,8 +359,6 @@
 (global-set-key "\C-w" 'backward-kill-word)
 (global-set-key "\C-x\C-m" 'execute-extended-command)
 (global-set-key "\C-x\C-k" 'kill-region)
-(global-unset-key [drag-mouse-1])
-(global-unset-key [down-mouse-1])
 (global-set-key (kbd "C-=") 'er/expand-region)
 (global-set-key "\C-cn" 'mc/mark-next-like-this)
 (global-set-key "\C-cf" 'line-to-clipboard)
@@ -335,10 +373,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/org/org.org" "inbox.org" "99theses.org")))
+ '(org-agenda-files (quote ("~/org/org.org" "~/org/inbox.org")))
+ '(org2blog/wp-show-post-in-browser (quote show))
  '(package-selected-packages
    (quote
-    (noflet use-package sicp smooth-scrolling weechat fish-mode magit dumb-jump beeminder haskell-mode yasnippet yari wc-mode sml-mode smartparens slime sass-mode rvm ruby-tools rubocop rainbow-mode quack project-mode php-mode paredit org2blog nrepl markdown-mode magithub langtool inf-ruby helm ghc geiser flymake-easy dired+ color-theme)))
+    (rubocopfmt anki-editor noflet use-package sicp smooth-scrolling weechat fish-mode magit dumb-jump beeminder haskell-mode yasnippet yari wc-mode sml-mode smartparens slime sass-mode rvm ruby-tools rubocop rainbow-mode quack project-mode php-mode paredit org2blog nrepl markdown-mode magithub langtool inf-ruby helm ghc geiser flymake-easy dired+ color-theme)))
  '(quack-programs
    (quote
     ("mzscheme" "bigloo" "csi" "csi -hygienic" "gosh" "gracket" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "racket" "racket -il typed/racket" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi")))
@@ -352,3 +391,4 @@
  )
 
 (put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
